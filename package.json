@@ -1,7 +1,7 @@
 {
   "name": "igp_ecommerce",
   "version": "0.1.0",
-  "private": "false",
+  "private": "true",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "npx prisma && next build",
@@ -35,11 +35,14 @@
     "tailwind-merge": "^3.2.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20.17.32",
     "@types/nodemailer": "^6.4.17",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.1",
     "prisma": "^6.7.0",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
