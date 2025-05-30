@@ -1,0 +1,21 @@
+#search{
+    width: 100%;
+    height: 10vh;
+    background-color: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 10px;
+}
+
+#search #search-form input{
+    padding: 8px;
+    width: 300px;
+    border: 1px solid #b1b1b1;
+}
+#search #search-form button{
+    padding: 8px 15px;
+    border: 1px solid #243e36;
+    background-color: #243e36;
+    color: white;
+}

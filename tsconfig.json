@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.jsx", ".next/types/**/*.ts", "app/profiles/page.js", "app/admindashboard/insert/page.jsx", "app/pages/details/[id]", "app/dashboard/products/page.jsx", "lib/utils.js", "lib/sendEmail.js", "lib/prisma.js", "app/store/cartSlice.js", "app/store/types.js", "app/store/store.js", "app/actions/searchProduct.js", "app/actions/products.js", "app/actions/getUsersProduct.js", "app/actions/getProductDetails.js", "app/actions/getProduct.js", "app/actions/getOneProduct.js", "app/actions/editProduct.js", "app/actions/deleteProduct.js", "app/actions/createOrders.js", "app/actions/vendors/orders.js", "app/actions/vendors/getProducts.js", "app/actions/login/login.js", "app/actions/login/mail.js", "app/actions/login/registration.js", "app/actions/login/verifyEmail.js", "app/actions/admin/vendorsRequest.js", "app/actions/admin/showVendors.js", "app/actions/admin/searchVendor.js", "app/actions/admin/getVendorProduct.js", "app/actions/admin/getVendorbyId.js", "app/actions/admin/getAllVendors.js", "app/actions/admin/deleteVendor.js", "app/actions/admin/deActivateVendor.js", "app/actions/admin/cancelApproveProduct.js", "app/actions/admin/approveProduct.js", "app/actions/admin/addVendor.js", "app/actions/admin/activateVendor.js", "app/actions/superadmin/setPermissions.js", "app/actions/superadmin/login.js", "app/actions/superadmin/getRole.js", "app/actions/superadmin/getUsers.js", "app/actions/superadmin/getAdmins.js", "app/actions/superadmin/deleteRole.js", "app/actions/superadmin/deleteAdmin.js", "app/actions/superadmin/deactiveAdmin.js", "app/actions/superadmin/createRole.js", "app/actions/superadmin/assignRole.js", "app/actions/superadmin/adminRequest.js", "app/actions/superadmin/activeAdmin.js", "app/actions/categories/updateCategory.js", "app/actions/categories/getCategory.js", "app/actions/categories/createCategory.js", "app/actions/getcategorydata/getCakes.js", "app/actions/getcategorydata/getFlowers.js", "app/actions/getcategorydata/getInternationals.js", "app/actions/getcategorydata/getPlants.js", "app/actions/getcategorydata/newArrival.js", "app/actions/getcategorydata/Personalized.js", "app/actions/getcategorydata/sameDayDelivery.js", "middleware.js"],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,96 @@
+// 10-15-2025
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model AddCategory {
+  id         BigInt   @id(map: "Category_pkey") @default(autoincrement())
+  catename   String
+  cateurl    String?
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  role        String   @unique
+  permissions String[]
+  users       User[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id          String     @id @default(cuid())
+  roleId      String?    // foreign key
+  role        Role?      @relation(fields: [roleId], references: [id])
+  permissions String[]
+  name        String?
+  email       String? 
+  password    String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  products    Product[]  // One-to-many: A user has many products
+}
+
+model Product {
+  id              Int      @id @default(autoincrement())
+  proname         String
+  protitle        String
+  proprice        Int
+  prodesc         String
+  proCategory     String
+  proinfo         String
+  samedaydelivery String?  @default("no")
+  approve         String?  @default("no")
+  proimgurl       String
+  type            String
+  createdAt       DateTime @default(now())
+  userId          String?   // Foreign key to User
+  user            User?     @relation(fields: [userId], references: [id])
+}
+
+
+model CustomerOrder {
+  id                Int      @id @default(autoincrement())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  username          String?
+  useremail         String?
+  phoneNumber       String
+  address           String
+  pincode           String
+  products          Json
+  amount            Int
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  razorpaySignature String?
+  paymentStatus     String   @default("pending")
+  vendorId          String?
+}
+
+model Customers {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  contact   Int
+  imgurl    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model otpgenerate {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  generatedOtp String
+}
+
+
+

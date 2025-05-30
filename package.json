@@ -1,0 +1,56 @@
+{
+  "name": "igp_ecommerce",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "npx prisma && next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@casl/ability": "^6.7.3",
+    "@casl/react": "^5.0.0",
+    "@clerk/nextjs": "^6.16.0",
+    "@prisma/client": "^6.7.0",
+    "@reduxjs/toolkit": "^2.7.0",
+    "axios": "^1.8.4",
+    "bcryptjs": "^3.0.2",
+    "bootstrap": "^5.3.5",
+    "chart.js": "^4.4.9",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.503.0",
+    "next": "15.3.1",
+    "nodemailer": "^6.10.1",
+    "razorpay": "^2.9.6",
+    "react": "^19.0.0",
+    "react-bootstrap": "^2.10.9",
+    "react-chartjs-2": "^5.3.0",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0",
+    "react-redux": "^9.2.0",
+    "redux-persist": "^6.0.0",
+    "sweetalert2": "^11.19.1",
+    "tailwind-merge": "^3.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20.17.32",
+    "@types/nodemailer": "^6.4.17",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "prisma": "^6.7.0",
+    "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
