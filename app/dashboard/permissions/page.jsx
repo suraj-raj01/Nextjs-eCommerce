@@ -21,6 +21,7 @@ export default function Page() {
   }, []);
 
   const setPermissions = async (id, permission) => {
+    console.log(id,permission)
     await setPermission(id, permission);
   };
 

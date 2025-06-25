@@ -1,23 +1,16 @@
 "use client";
 import { productData } from '../../actions/products';
-import { useState, useRef, ChangeEvent, useEffect, startTransition } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import getCategory from "../../actions/categories/getCategory";
 import React from "react";
 import Image from "next/image";
 import Swal from "sweetalert2";
 
-const initialstate = {
-  success: undefined,
-  error: "",
-  data: undefined
-};
-
 export default function Form() {
-
-  const [state, formAction] = React.useState(initialstate);
   const [image, setImage] = useState(null);
   const [cateData, setCategory] = useState([]);
   const [id, setId] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleFileChange = (event) => {
@@ -39,45 +32,88 @@ export default function Form() {
   };
 
   const getCategories = async () => {
-    const response = await getCategory();
-    if (Array.isArray(response)) {
+    try {
+      const response = await getCategory();
+      if (response && response.data && Array.isArray(response.data)) {
+        setCategory(response.data);
+      } else if (Array.isArray(response)) {
+        setCategory(response);
+      } else {
+        setCategory([]);
+        console.error('Invalid category response format');
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
       setCategory([]);
-    } else {
-      setCategory(response.data || []);
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
 
-    startTransition(() => {
-      const formData = new FormData(form);
-      formData.append('id', id);
-      formAction(formData);
-      form.reset();
-      setImage(null);
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    const formData = new FormData(form);
+    formData.append("id", id);
+
+    try {
+      // Call the server action directly with FormData
+      const response = await productData(formData);
+      
+      if (response?.success) {
+        Swal.fire({
+          title: "Success!",
+          text: "Product added successfully!",
+          icon: "success",
+        }).then(() => {
+          form.reset();
+          setImage(null);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+          }
+        });
+      } else {
+        Swal.fire({
+          title: "Failed!",
+          text: response?.error || "Something went wrong!",
+          icon: "error",
+        });
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
       Swal.fire({
-        title: "Data inserted successfully!",
-        icon: "success"
+        title: "Error!",
+        text: "Something went wrong while submitting the form.",
+        icon: "error",
       });
-    });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   useEffect(() => {
     getCategories();
-    const storedUser = localStorage.getItem('user');
-    if (!storedUser) return;
-    const user = JSON.parse(storedUser);
-    setId(user?.id);
+    
+    try {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        setId(user?.id || "");
+      }
+    } catch (error) {
+      console.error('Error parsing user from localStorage:', error);
+    }
   }, []);
 
   return (
     <>
-      <form onSubmit={handleSubmit} id="formdata" className="p-4 rounded-lg">
-        <div id="form-main" className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-          <div id="insertform" className="space-y-6">
-            <div id="box" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <form onSubmit={handleSubmit} className="p-4 rounded-lg">
+        <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 type="text"
                 required
@@ -97,16 +133,19 @@ export default function Form() {
                 required
                 name="price"
                 placeholder="Product Price"
+                min="0"
+                step="0.01"
                 className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               />
               <select
                 name="type"
+                required
                 className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
                 title="Product Type"
               >
-                <option value="">Gift Type</option>
+                <option value="">Select Gift Type</option>
                 <option value="Birthday Gift">Birthday Gift</option>
-                <option value="Aniversary Gift">Anniversary Gift</option>
+                <option value="Anniversary Gift">Anniversary Gift</option>
                 <option value="International">International</option>
                 <option value="Plants">Plants</option>
                 <option value="Personalized">Personalized</option>
@@ -114,15 +153,16 @@ export default function Form() {
               </select>
             </div>
 
-            <div id="box" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <select
                 name="category"
+                required
                 className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
                 title="Choose a category"
               >
-                <option>Select Category</option>
+                <option value="">Select Category</option>
                 {cateData.map((item, index) => (
-                  <option key={index} value={item.catename}>
+                  <option key={item.id || index} value={item.catename}>
                     {item.catename}
                   </option>
                 ))}
@@ -130,10 +170,11 @@ export default function Form() {
 
               <select
                 name="sameday"
+                required
                 className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
                 title="Same Day Delivery"
               >
-                <option value="">Same Day Delivery</option>
+                <option value="">Select Same Day Delivery</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
@@ -141,48 +182,60 @@ export default function Form() {
               <textarea
                 name="details"
                 required
-                placeholder="Details"
-                rows={5}
-                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                placeholder="Product Details"
+                rows={3}
+                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black col-span-1 sm:col-span-2"
               ></textarea>
 
               <textarea
                 required
                 name="proinfo"
                 placeholder="Product Info"
-                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                rows={2}
+                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black col-span-1 sm:col-span-2"
               ></textarea>
 
-              <input
-                type="file"
-                name="imgurl"
-                multiple
-                required
-                placeholder="Choose File"
-                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-                onChange={handleFileChange}
-              />
+              <div className="col-span-1 sm:col-span-2">
+                <input
+                  type="file"
+                  name="imgurl"
+                  required
+                  ref={fileInputRef}
+                  accept="image/*"
+                  className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black w-full"
+                  onChange={handleFileChange}
+                />
 
-              {image && (
-                <div className="flex items-center gap-2">
-                  <span
-                    onClick={handleRemoveImage}
-                    className="cursor-pointer text-red-500 text-lg"
-                  >
-                    X
-                  </span>
-                  <Image src={image} alt="Selected Image" width={30} height={30} />
-                </div>
-              )}
+                {image && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="cursor-pointer text-red-500 text-lg hover:text-red-700 bg-transparent border-none"
+                      title="Remove image"
+                    >
+                      ✕
+                    </button>
+                    <Image 
+                      src={image} 
+                      alt="Selected Image" 
+                      width={50} 
+                      height={50} 
+                      className="rounded border"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          <div id="btn" className="text-center mt-6">
+          <div className="text-center mt-6">
             <button
               type="submit"
-              className="w-full p-2 bg-red-500 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-black"
+              disabled={isSubmitting}
+              className="w-full p-2 bg-red-500 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Submit
+              {isSubmitting ? "Submitting..." : "Submit"}
             </button>
           </div>
         </div>

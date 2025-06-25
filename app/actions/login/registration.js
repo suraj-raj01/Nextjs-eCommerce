@@ -40,7 +40,7 @@ export default async function Registration(prevState, formData) {
             error: "",
             message: "User Registration successfully!"
         };
-    } catch (err) {
+    } catch (error) {
         return {
             success: false,
             error: "Failed to add user.",

@@ -7,7 +7,7 @@ export default async function getFlower() {
     const users = await prisma.product.findMany({
       where: {
         proCategory: {
-          equals: "flowers",
+          equals: "flower",
           mode: "insensitive"
         }
       }

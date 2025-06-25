@@ -45,7 +45,7 @@ const page = () => {
     <div>
       <div id='cate-header'>
         <p className='text-2xl font-bold'>Categories</p>
-        <button onClick={() => { router.push("/dashboard/addcategory") }}
+        <button onClick={() => { router.push("/dashboard/categories/addcategory") }}
           className='bg-green-700 p-2 text-white'
         >Add Category</button>
       </div>

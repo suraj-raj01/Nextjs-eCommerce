@@ -20,7 +20,7 @@ export default async function setPermissions(id, permission) {
     try {
         if (index > -1) {
             const updatedPermissions = roledata?.permissions?.filter((perm) => perm !== permission) || [];
-            const updatedRole = await prisma.role.update({
+            await prisma.role.update({
                 where: { id: id },
                 data: {
                     permissions: {
@@ -29,7 +29,7 @@ export default async function setPermissions(id, permission) {
                 },
             });
         } else {
-            const updatedRole = await prisma.role.update({
+            await prisma.role.update({
                 where: { id: id },
                 data: {
                     permissions: {

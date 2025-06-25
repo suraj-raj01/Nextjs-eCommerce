@@ -20,9 +20,9 @@ export async function createOrder(prevState, formData) {
     const useremail = formData.get("useremail");
     const productsRaw = JSON.parse(formData.get("products"));
     const vendoremail = formData.get("vendoremail");
-    const razorpayPaymentId = formData.get("razorpayPaymentId");
-    const razorpayOrderId = formData.get("razorpayOrderId");
-    const razorpaySignature = formData.get("razorpaySignature");
+    // const razorpayPaymentId = formData.get("razorpayPaymentId");
+    // const razorpayOrderId = formData.get("razorpayOrderId");
+    // const razorpaySignature = formData.get("razorpaySignature");
 
     if (
       !username ||
@@ -41,7 +41,7 @@ export async function createOrder(prevState, formData) {
       try {
         parsedProducts = productsRaw;
       } catch (error) {
-        throw new Error("Invalid JSON format for products");
+        throw new Error(error,"Invalid JSON format for products");
       }
     }
 

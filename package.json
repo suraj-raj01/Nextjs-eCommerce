@@ -4,7 +4,7 @@
   "private": "true",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "npx prisma && next build",
+    "build": " npx prisma generate & next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -12,7 +12,7 @@
     "@casl/ability": "^6.7.3",
     "@casl/react": "^5.0.0",
     "@clerk/nextjs": "^6.16.0",
-    "@prisma/client": "^6.7.0",
+    "@prisma/client": "^6.10.1",
     "@reduxjs/toolkit": "^2.7.0",
     "axios": "^1.8.4",
     "bcryptjs": "^3.0.2",

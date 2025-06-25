@@ -3,7 +3,7 @@
     import { sendEmail } from '../../../lib/sendEmail';
     import { revalidatePath } from 'next/cache';
     
-    export async function sendContactForm(prevState:any, formData:FormData) {
+    export async function sendContactForm(prevState, formData) {
       const name = formData.get('name');
       const email = formData.get('email');
       const message = formData.get('message');

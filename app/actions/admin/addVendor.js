@@ -40,11 +40,8 @@ export default async function AddUserAction(prevState, formData) {
             error: "",
             message: "Vendor added successfully!"
         };
-    } catch (err) {
-        return {
-            success: false,
-            error: "Failed to add user.",
-            message: ""
+    } catch (error) {
+        return { error: "Failed to add user.",
         };
     }
 }
