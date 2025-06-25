@@ -67,8 +67,8 @@ export default function DisplayPage() {
     fetchData();
   }, [id]);
 
-  const editpage = (productId) => {
-    router.push(`/dashboard/editdata/${productId}`);
+  const editpage = (id) => {
+    router.push(`/dashboard/products/${id}`);
   };
 
   const deletePro = (productId) => {
@@ -125,7 +125,7 @@ export default function DisplayPage() {
           </form>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto p-4">
           <table className="min-w-full table-auto border border-gray-300 rounded-lg shadow-sm">
             <thead className="bg-gray-100 text-gray-700">
               <tr>

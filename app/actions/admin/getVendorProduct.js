@@ -9,7 +9,7 @@ export default async function getVendorsProduct(id) {
   try {
     const data = await prisma.product.findMany({
       where: {
-        userId: id,
+        vendorId: id,
       },
     });
 

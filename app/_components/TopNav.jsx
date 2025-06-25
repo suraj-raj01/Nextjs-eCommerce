@@ -16,7 +16,7 @@ import logo from '../../public/logo/logo.png';
 import bag from '../../public/bag.svg';
 import { useUser } from "@clerk/nextjs";
 import { useSelector } from 'react-redux';
-import {UserButton,SignedIn} from "@clerk/nextjs"
+import { UserButton, SignedIn } from "@clerk/nextjs"
 
 export default function TopNav() {
   const router = useRouter();
@@ -64,17 +64,13 @@ export default function TopNav() {
       <Navbar collapseOnSelect expand="lg" id="navbar">
         <Container>
           <Navbar.Brand>
-            <FaBars id="icon" onClick={sidebar} />
+            <FaBars id="icon" onClick={sidebar}/>
             <AiOutlineClose
               id="closebtn"
               onClick={closeBtn}
               style={{
                 display: 'none',
-                padding: '5px',
                 borderRadius: '50%',
-                backgroundColor: 'ghostwhite',
-                height: '30px',
-                width: '30px',
                 cursor: 'pointer',
               }}
             />
@@ -92,7 +88,7 @@ export default function TopNav() {
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto"></Nav>
 
-            <Nav id="icons" className="flex items-center content-center">
+            <Nav id="icons" className="flex items-center justify-center gap-2">
               <Nav.Link href="/pages/wishlist">
                 {likes < 1 ? (
                   <div className='flex item-center content-between text-center font-bold'>
@@ -111,7 +107,7 @@ export default function TopNav() {
                 )}
               </Nav.Link>
               <Nav.Link href="/pages/cartitems">
-                <div className='flex item-center content-between text-center font-bold'>
+                <div className='flex item-center content-between text-center font-bold mr-2'>
                   <span className=' flex flex-col item-center content-between text-2xl'>
                     <span className='text-xs rounded-lg bg-gray-100'>{count}</span>
                     <IoMdCart />
@@ -120,12 +116,21 @@ export default function TopNav() {
               </Nav.Link>
 
               {!user ? (
-                <button className="font-bold p-2 bg-red-400 text-white rounded-lg ml-3" onClick={() => { router.push("/Auth/login") }}>
+                <button
+                  className="font-semibold px-6 py-2 w-fit bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-2xl shadow-md transition duration-200 ml-3"
+                  onClick={() => router.push("/Auth/login")}
+                >
                   Login
                 </button>
+
               ) : (
                 <SignedIn>
-                  <UserButton />
+                  <UserButton appearance={{
+                    elements: {
+                      userButtonAvatarBox: 'bg-red-400 rounded-lg ml-3',
+                      // other keys depending on what part you want to style
+                    }
+                  }} />
                 </SignedIn>
               )}
             </Nav>

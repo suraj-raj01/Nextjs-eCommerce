@@ -110,8 +110,9 @@ export default function Form() {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="p-4 rounded-lg">
-        <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+      <form onSubmit={handleSubmit} className="pl-6 pt-3 pr-6 rounded-lg">
+        <div className="max-w-full mx-auto bg-white p-6 rounded-lg shadow-lg">
+          <p className='font-bold text-2xl text-center'>Insert Product</p>
           <div className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input

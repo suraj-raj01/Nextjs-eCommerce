@@ -66,7 +66,7 @@ body {
   display: none;
   height: 80vh;
   width: 300px;
-  top: 10vh;
+  top: 11vh;
   z-index: 2;
   position: absolute;
   background-color: #ffffff;
@@ -291,7 +291,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 20px;
-  background-color: #11150d;
+  background-color: #0f172a;
   color: white;
   font-size: 25px;
 }
@@ -303,7 +303,7 @@ body {
 #vendordashboard {
   height: 88vh;
   width: 280px;
-  background-color: #11150d;
+  background-color: #0f172a;
   border: 1px solid transparent;
   border-top-color: #838181;
   border-bottom-color: #838181;
@@ -354,7 +354,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #11150d;
+  background-color: #0f172a;
   padding: 15px 0px;
 }
 

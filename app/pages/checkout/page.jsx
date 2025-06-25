@@ -101,109 +101,108 @@ const CheckOut = () => {
     };
 
     return (
-        <div>
-            <p className='text-2xl font-bold text-center p-3'>Checkout Page</p>
-            <hr />
+        <div className="min-h-screen bg-gray-100 p-4 md:p-8">
+            <p className="text-3xl font-bold text-center text-gray-800 mb-6">Checkout Page</p>
             {cartItems.length > 0 ? (
-                <div id="main" className="flex flex-col lg:flex-row gap-6 p-4">
-                    {/* Cart Products Section */}
-                    <div id="products" className="w-full lg:w-2/3">
-                        <hr className="mb-4" />
-                        <div className="overflow-auto">
-                            <table className="min-w-full table-auto text-left border-collapse">
-                                <thead className="bg-gray-100">
-                                    <tr>
-                                        <th className="p-2">Name</th>
-                                        <th className="p-2">Title</th>
-                                        <th className="p-2 w-20">Price</th>
-                                        <th className="p-2">Image</th>
-                                        <th className="p-2">Quantity</th>
-                                        <th className="p-2">Delete</th>
+                <div className="flex flex-col lg:flex-row gap-6">
+                    {/* Products Table */}
+                    <div className="w-full lg:w-2/3 bg-white p-4 shadow rounded-lg overflow-x-auto">
+                        <h2 className="text-xl font-semibold mb-4">Your Cart</h2>
+                        <table className="w-full table-auto text-sm text-gray-700">
+                            <thead className="bg-gray-200 text-gray-800">
+                                <tr>
+                                    <th className="p-3 text-left">Name</th>
+                                    <th className="p-3 text-left">Title</th>
+                                    <th className="p-3 text-center">Price</th>
+                                    <th className="p-3 text-center">Image</th>
+                                    <th className="p-3 text-center">Quantity</th>
+                                    <th className="p-3 text-center">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {cartItems.map((item, index) => (
+                                    <tr key={index} className="border-b hover:bg-gray-50">
+                                        <td className="p-3">{item.proname}</td>
+                                        <td className="p-3">{item.protitle}</td>
+                                        <td className="p-3 text-center">{item.proprice * item.quantity} ₹</td>
+                                        <td className="p-3 text-center">
+                                            <img src={item.proimgurl} alt="product" className="h-12 w-12 object-cover rounded" />
+                                        </td>
+                                        <td className="p-3">
+                                            <div className="flex items-center justify-center gap-2">
+                                                <FaMinusCircle onClick={() => dispatch(decrementQuantity(item.id))} className="text-red-600 cursor-pointer hover:text-red-800" />
+                                                <span className="px-2">{item.quantity}</span>
+                                                <FaPlusCircle onClick={() => dispatch(incrementQuantity(item.id))} className="text-green-600 cursor-pointer hover:text-green-800" />
+                                            </div>
+                                        </td>
+                                        <td className="p-3 text-center">
+                                            <button onClick={() => removeItm(item.id)} className="text-red-500 hover:text-red-700">
+                                                <MdDelete size={20} />
+                                            </button>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {cartItems.map((item, index) => (
-                                        <tr key={index} className="border-b">
-                                            <td className="p-2">{item.proname}</td>
-                                            <td className="p-2">{item.protitle}</td>
-                                            <td className="p-2">{item.proprice * item.quantity} ₹</td>
-                                            <td className="p-2">
-                                                <img src={item.proimgurl} alt="proimage" className="h-12 w-12 object-cover" />
-                                            </td>
-                                            <td className="p-2">
-                                                <div className="flex items-center gap-2 justify-center">
-                                                    <FaMinusCircle onClick={() => dispatch(decrementQuantity(item.id))} className="cursor-pointer" />
-                                                    <span>{item.quantity}</span>
-                                                    <FaPlusCircle onClick={() => dispatch(incrementQuantity(item.id))} className="cursor-pointer" />
-                                                </div>
-                                            </td>
-                                            <td className="p-2">
-                                                <button
-                                                    className="bg-red-500 hover:bg-red-600 text-white text-sm px-2 py-1 rounded"
-                                                    onClick={() => removeItm(item.id)}
-                                                >
-                                                    <MdDelete />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                ))}
+                            </tbody>
+                        </table>
 
-                        {/* Action Buttons */}
-                        <div id="clrbtn" className="mt-4 flex flex-wrap gap-4 justify-between items-center">
-                            <button onClick={clearCartItem} className="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded">
+                        <div className="flex justify-between items-center mt-6">
+                            <button
+                                onClick={clearCartItem}
+                                className="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded shadow"
+                            >
                                 Clear Cart
                             </button>
-                            <span className="text-lg font-bold">Total: {total} ₹</span>
+                            <span className="text-lg font-semibold text-gray-800">
+                                Total: ₹{total}
+                            </span>
                         </div>
                     </div>
 
-                    {/* Delivery Form Section */}
-                    <div id="deliveryform" className="w-full lg:w-1/3 bg-gray-50 p-4 rounded shadow-md">
-                        <h3 className="text-xl font-semibold mb-2">Delivery Address</h3>
-                        <hr className="mb-4" />
-                        <form onSubmit={handlePayment} className="flex flex-col gap-3">
+                    {/* Delivery Form */}
+                    <div className="w-full lg:w-1/3 bg-white p-6 shadow rounded-lg">
+                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Delivery Address</h3>
+                        <form onSubmit={handlePayment} className="space-y-4">
                             <input
                                 required
                                 type="number"
                                 name="contact"
                                 placeholder="Contact Number"
-                                className="p-2 border border-gray-300 rounded"
+                                className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-400"
                             />
                             <textarea
-                                rows={5}
+                                rows={4}
                                 required
                                 name="address"
-                                placeholder="Enter delivery address"
-                                className="p-2 border border-gray-300 rounded"
+                                placeholder="Full delivery address"
+                                className="w-full border border-gray-300 p-2 rounded resize-none focus:outline-none focus:ring-2 focus:ring-green-400"
                             />
                             <input
                                 required
                                 type="number"
                                 name="pincode"
                                 placeholder="PIN Code"
-                                className="p-2 border border-gray-300 rounded"
+                                className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-400"
                             />
-                            <span className="text-sm text-gray-700">{username}</span>
-                            <span className="text-sm text-gray-700">{useremail}</span>
+                            <div className="text-sm text-gray-600 space-y-1">
+                                <p><strong>Name:</strong> {username}</p>
+                                <p><strong>Email:</strong> {useremail}</p>
+                            </div>
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="p-2 bg-green-700 text-white rounded hover:bg-green-800 transition"
+                                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded transition duration-300"
                             >
-                                {loading ? 'Processing...' : 'Pay Now'}
+                                {loading ? 'Processing Payment...' : 'Pay Now'}
                             </button>
                         </form>
                     </div>
                 </div>
-
             ) : (
-                <h2 className='text-center'>Data Not Found!!!</h2>
+                <h2 className="text-center text-xl text-gray-600">Cart is Empty.</h2>
             )}
         </div>
     );
+
 };
 
 export default CheckOut;

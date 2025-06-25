@@ -23,24 +23,21 @@ const AbilityContext = createContext();
 export default function SuperAdminLayout({ children }) {
   const [ability, setAbility] = useState(null);
   const [username, setUsername] = useState("");
+  const [useremail, setUseremail] = useState("");
 
   const router = useRouter();
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (!storedUser) return;
-
     const user = JSON.parse(storedUser);
-    console.log(user);
-    console.log('User Role:', user?.role?.role);
     setUsername(user?.role?.role);
-    console.log('User Permissions:', user?.role?.permissions);
+    setUseremail(user?.email);
     const abilityInstance = defineAbilitiesFor(user);
     setAbility(abilityInstance);
   }, []);
 
   const CanComponent = createContextualCan(AbilityContext.Consumer);
   if (!ability) return null;
-  console.log(ability);
 
   const sidebar = () => {
     const dashboard = document.getElementById('vendordashboard');
@@ -93,6 +90,7 @@ export default function SuperAdminLayout({ children }) {
           {username.toUpperCase()} DASHBOARD
         </div>
         <div>
+        <span className='text-sm mr-2'>Email : {useremail}</span>
         <span onClick={logout} className="font-semibold text-sm text-white cursor-pointer bg-red-600 p-2 rounded-md">LOGOUT</span>
         </div>
       </header>

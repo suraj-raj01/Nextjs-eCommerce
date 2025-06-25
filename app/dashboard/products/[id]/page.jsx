@@ -1,155 +1,292 @@
-'use client';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Table from "react-bootstrap/Table";
-import { MdDelete } from "react-icons/md";
-import deleteProduct from '../../../actions/deleteProduct';
-import getVendorsProduct from "../../../actions/admin/getVendorProduct";
-import approveProduct from '../../../actions/admin/approveProduct';
-import cancelApproveProduct from '../../../actions/admin/cancelApproveProduct';
-import { useParams } from 'next/navigation';
-import getVendorbyId from '../../../actions/admin/getVendorbyId';
-import Swal from 'sweetalert2';
+"use client";
+import editProduct from "../../../actions/editProduct";
+import { useState, useRef, ChangeEvent, useEffect, startTransition } from 'react';
+import getCategory from "../../../actions/categories/getCategory";
+import React from "react";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import getOneProduct from "../../../actions/getOneProduct";
+import Swal from "sweetalert2";
 
-export default function DisplayPage() {
-  const [data, setVendorProduct] = useState([]);
-  const [vendor, setVendor] = useState({});
+const initialstate = {
+  success: undefined,
+  error: "",
+  data: undefined
+};
+
+export default function Form() {
+  const [state, setState] = useState(initialstate);
+
+  const formAction = (formData) => {
+    setState({ ...state, success: true, data: formData });
+  };
+
+  const [image, setImage] = useState(null);
+  const [formdata, setFormData] = useState({
+    proname: '',
+    protitle: '',
+    proprice: '',
+    type: '',
+    prodesc: '',
+    proinfo: '',
+    sameday: '',
+    proimgurl: ''
+  });
+  const [cateData, setCategory] = useState([]);
+  const [editData, setEditData] = useState({});
+  const fileInputRef = useRef(null);
+
   const params = useParams();
-  const id = params.id || undefined;
+  const formdataid = params.id ? Number(params.id) : undefined;
 
-  const fetchData = async () => {
-    const vendorData = await getVendorsProduct(id);
-    if (vendorData && Array.isArray(vendorData.data)) {
-      setVendorProduct(vendorData.data);
-    } else {
-      setVendorProduct([]);
+  const handleFileChange = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const getVendor = async () => {
-    const vendorInfo = await getVendorbyId(id);
-    setVendor(vendorInfo || {});
+  const handleRemoveImage = () => {
+    setImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // Handle input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const fetchProduct = async () => {
+    try {
+      const response = await getOneProduct(formdataid);
+      console.log("Data", response);
+      if (response) {
+        setFormData({
+          proname: response.proname || '',
+          protitle: response.protitle || '',
+          proprice: response.proprice || '',
+          type: response.type || '',
+          prodesc: response.prodesc || '',
+          proinfo: response.proinfo || '',
+          sameday: response.sameday || '',
+          proimgurl: response.proimgurl || ''
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    }
+  };
+
+  const getCategories = async () => {
+    try {
+      const response = await getCategory();
+      if (Array.isArray(response)) {
+        setCategory(response);
+      } else {
+        setCategory(response?.data || []);
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      setCategory([]);
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    
+    try {
+      startTransition(async () => {
+        const formDataObj = new FormData(event.currentTarget);
+        if (formdataid) {
+          formDataObj.append('id', formdataid);
+        }
+        const result = await editProduct(formDataObj);
+        console.log(result,"result")
+        if (result.success) {
+          setState({ ...state, success: true, data: result });
+         Swal.fire("Updated!", "Data Updated Successfull!", "success");
+        } else {
+          setState({ ...state, error: result.error || 'Something went wrong' });
+        }
+      });
+    } catch (error) {
+      console.error("Submit error:", error);
+      setState({ ...state, error: 'Failed to submit form' });
+    }
+  };
+
+  const formDataLoad = async () => {
+    if (formdataid !== undefined) {
+      try {
+        const data = await editProduct(formdataid);
+        setEditData(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error loading form data:", error);
+      }
+    }
   };
 
   useEffect(() => {
-    fetchData();
-    getVendor();
-  }, []);
-
-  const deleteItem = async (productId) => {
-    await deleteProduct(productId);
-    fetchData();
-    Swal.fire({
-      title: "Product Deleted!",
-      icon: "success"
-    });
-  };
-
-  const approve = async (productId) => {
-    await approveProduct(productId);
-    fetchData();
-    Swal.fire({
-      title: "Product Approved Successfully!",
-      icon: "success"
-    });
-  };
-
-  const cancelApprove = async (productId) => {
-    await cancelApproveProduct(productId);
-    fetchData();
-    Swal.fire({
-      title: "Product Approval Canceled!",
-      icon: "warning"
-    });
-  };
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
-
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-  const currentItems = data.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+    if (formdataid) {
+      formDataLoad();
+      fetchProduct();
+    }
+    getCategories();
+  }, [formdataid]);
 
   return (
-    <div>
-      <p className='text-center p-2 text-2xl font-bold'>{vendor?.name ? `${vendor.name}'s PRODUCTS` : "Vendor's Products"}</p>
-
-      {data && data.length > 0 ? (
-        <div style={{ height: '77vh' }} className='flex flex-col items-center content-between'>
-          <Table striped hover responsive>
-            <thead>
-              <tr>
-                <th>SNo</th>
-                <th>Product Name</th>
-                <th>Product Title</th>
-                <th>Price ₹</th>
-                <th>Category</th>
-                <th>Product Image</th>
-                <th>Approve Status</th>
-                <th>Update</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((item, index) => (
-                <tr key={index}>
-                  <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                  <td>{item.proname}</td>
-                  <td>{item.protitle}</td>
-                  <td>{item.proprice}</td>
-                  <td>{item.proCategory}</td>
-                  <td>
-                    <Image src={item.proimgurl} alt='img' height={50} width={50} />
-                  </td>
-                  <td>
-                    {item.approve === "no" ? (
-                      <Button size='sm' variant='warning' onClick={() => approve(item.id)}>Approve</Button>
-                    ) : (
-                      <Button size='sm' variant='success' onClick={() => cancelApprove(item.id)}>Approved</Button>
-                    )}
-                  </td>
-                  <td>
-                    <Button size='sm' variant='danger' onClick={() => deleteItem(item.id)}>
-                      <span className='flex items-center gap-1'><MdDelete />Delete</span>
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-
-          {/* Pagination */}
-          <div className="flex justify-center gap-3 mt-4">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="px-3 py-1 border rounded disabled:opacity-50"
-            >
-              Prev
-            </button>
-            {[...Array(totalPages).keys()].map((num) => (
-              <button
-                key={num}
-                onClick={() => setCurrentPage(num + 1)}
-                className={`px-3 py-1 border rounded ${currentPage === num + 1 ? 'bg-green-700 text-white' : ''}`}
+    <div className="p-3">
+      <form onSubmit={handleSubmit} id="formdata" className="p-6 rounded-lg">
+        <div id="form-main" className="max-w-full mx-auto bg-white p-6 rounded-lg shadow-lg">
+      <p className="font-bold text-2xl text-center pb-2">Update Product</p>
+          <div id="insertform" className="space-y-6">
+            <div id="box" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <input
+                value={formdata.proname}
+                onChange={handleInputChange}
+                type="text"
+                required
+                name="proname"
+                placeholder="Product Name"
+                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              />
+              <input
+                value={formdata.protitle}
+                onChange={handleInputChange}
+                type="text"
+                required
+                name="protitle"
+                placeholder="Product Title"
+                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              />
+              <input
+                value={formdata.proprice}
+                onChange={handleInputChange}
+                type="number"
+                required
+                name="proprice"
+                placeholder="Product Price"
+                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              />
+              <select
+                name="type"
+                value={formdata.type}
+                onChange={handleInputChange}
+                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                title="Product Type"
               >
-                {num + 1}
+                <option value="">Select Product Type</option>
+                <option value="Birthday Gift">Birthday Gift</option>
+                <option value="Anniversary Gift">Anniversary Gift</option>
+                <option value="International">International</option>
+                <option value="Plants">Plants</option>
+                <option value="Personalized">Personalized</option>
+                <option value="Gift Flower">Gift Flower</option>
+              </select>
+            </div>
+
+            {/* Category, Same Day, and Type Selects */}
+            <div id="box" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <select
+                name="category"
+                value={formdata.category || ''}
+                onChange={handleInputChange}
+                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                title="Choose a category"
+              >
+                <option value="">Select Category</option>
+                {cateData.map((item, index) => (
+                  <option key={index} value={item.catename}>
+                    {item.catename}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                name="sameday"
+                value={formdata.sameday}
+                onChange={handleInputChange}
+                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                title="Same Day Delivery"
+              >
+                <option value="">Select Same Day Delivery</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+
+              <textarea
+                value={formdata.prodesc}
+                name="prodesc"
+                onChange={handleInputChange}
+                required
+                placeholder="Details"
+                rows={4}
+                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              ></textarea>
+
+              <textarea
+                required
+                name="proinfo"
+                value={formdata.proinfo}
+                onChange={handleInputChange}
+                placeholder="Product Info"
+                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              ></textarea>
+
+              {/* File Upload */}
+              <input
+                type="file"
+                name="imgurl"
+                multiple
+                ref={fileInputRef}
+                placeholder="Choose file"
+                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                onChange={handleFileChange}
+              />
+
+            </div>
+              {image && (
+                <div className="flex items-center gap-2 mt-4">
+                  <span
+                    onClick={handleRemoveImage}
+                    className="cursor-pointer text-red-500 text-lg font-bold hover:text-red-700"
+                  >
+                    ✕
+                  </span>
+                  <Image src={image} alt="Selected Image" width={60} height={60} />
+                </div>
+              )}
+            
+            {/* Error Display */}
+            {state.error && (
+              <div className="text-red-500 text-sm mt-2">
+                {state.error}
+              </div>
+            )}
+            
+            {/* Submit Button */}
+            <div id="btn" className="text-center mt-6">
+              <button
+                type="submit"
+                className="w-full p-2 bg-red-500 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+              >
+                {formdataid ? 'Update Product' : 'Create Product'}
               </button>
-            ))}
-            <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="px-3 py-1 border rounded disabled:opacity-50"
-            >
-              Next
-            </button>
+            </div>
           </div>
         </div>
-      ) : (
-        <div className="text-center py-10 text-lg font-semibold text-gray-500">No Data Found</div>
-      )}
+      </form>
     </div>
   );
 }
