@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { FaBars } from 'react-icons/fa';
-import { GoSidebarExpand } from "react-icons/go";
+import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { FaUserGroup } from 'react-icons/fa6';
 import { AiFillDashboard } from 'react-icons/ai';
 import DashbaordFooter from '../_components/DashbaordFooter';
@@ -25,6 +25,14 @@ export default function SuperAdminLayout({ children }) {
   const [username, setUsername] = useState("");
   const [useremail, setUseremail] = useState("");
 
+  const SidebarLink = ({ href, icon, label }) => (
+    <Link href={href} className="flex items-center gap-3 text-sm font-medium text-gray-700 hover:text-blue-600 transition">
+      {icon}
+      <span>{label}</span>
+    </Link>
+  );
+
+
   const router = useRouter();
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -37,7 +45,13 @@ export default function SuperAdminLayout({ children }) {
   }, []);
 
   const CanComponent = createContextualCan(AbilityContext.Consumer);
-  if (!ability) return null;
+  if (!ability){
+    return(
+      <div className='h-screen flex items-center justify-center text-2xl text-white font-bold bg-gray-800'>
+        Redirecting....
+      </div>
+    )
+  };
 
   const sidebar = () => {
     const dashboard = document.getElementById('vendordashboard');
@@ -82,92 +96,75 @@ export default function SuperAdminLayout({ children }) {
   }
 
   return (
-    <main>
-      <header id="vendor-nav">
-        <div className="flex items-center content-center gap-3">
-          <FaBars onClick={sidebar} id="menu" style={{ display: 'none' }} />
-          <GoSidebarExpand id="cancelbtn" onClick={cancelbtn} style={{ display: 'block' }} />
-          {username.toUpperCase()} DASHBOARD
+    <main className="min-h-screen flex flex-col bg-gray-100">
+      {/* Header */}
+      <header id="vendor-nav" className="flex justify-between items-center bg-blue-800 text-white px-6 py-4 shadow">
+        <div className="flex items-center gap-3 text-lg font-bold">
+          <GoSidebarCollapse id="menu" onClick={sidebar} className="cursor-pointer hidden md:block" />
+          <GoSidebarExpand id="cancelbtn" onClick={cancelbtn} className="cursor-pointer hidden md:block" />
+          <span>{username?.toUpperCase()} DASHBOARD</span>
         </div>
-        <div>
-        <span className='text-sm mr-2'>Email : {useremail}</span>
-        <span onClick={logout} className="font-semibold text-sm text-white cursor-pointer bg-red-600 p-2 rounded-md">LOGOUT</span>
+        <div className="flex items-center gap-4 text-sm">
+          <span>
+            <span className='pl-2 pr-2 pb-1 rounded-xl mr-2 bg-red-500 font-bold'>{useremail[0]}</span>
+            {useremail}
+          </span>
+          <span
+            onClick={logout}
+            className="cursor-pointer bg-red-600 hover:bg-red-700 px-3 py-1 font-semibold"
+          >
+            LOGOUT
+          </span>
         </div>
       </header>
-      <AbilityContext.Provider value={ability}>
-        <div id="vendor-main" className="flex">
-          <div id="vendordashboard" style={{ display: 'block' }}>
-            <Link href="#" className="flex items-center gap-3 text-2xs">
-              <AiFillDashboard />
-              Dashboard
-            </Link>
-            <CanComponent I="manage" a="Admin">
-              <Link href="/dashboard/createrole" className="flex items-center gap-3 text-2xs">
-                <PiUserCirclePlusFill />
-                Create Role
-              </Link>
-              <Link href="/dashboard/adduser" className="flex items-center gap-3 text-2xs">
-                <IoIosPersonAdd />
-                Add User
-              </Link>
-              <Link href="/dashboard/assignrole" className="flex items-center gap-3 text-2xs">
-                <MdAssignmentInd />
-                Assign Role
-              </Link>
-              <Link href="/dashboard/permissions" className="flex items-center gap-3 text-2xs">
-                <MdPrivacyTip />
-                Manage Permissions
-              </Link>
 
+      {/* Main Layout */}
+      <AbilityContext.Provider value={ability}>
+        <div id="vendor-main" className="flex flex-1 overflow-hidden">
+          {/* Sidebar */}
+          <aside
+            id="vendordashboard"
+            style={{ display: 'block' }}
+            className="w-64 bg-gray-900 shadow-lg p-4 space-y-3  border-r"
+          >
+            <SidebarLink href="#" icon={<AiFillDashboard />} label="Dashboard" />
+
+            <CanComponent I="manage" a="Admin">
+              <SidebarLink href="/dashboard/createrole" icon={<PiUserCirclePlusFill />} label="Create Role" />
+              <SidebarLink href="/dashboard/adduser" icon={<IoIosPersonAdd />} label="Add User" />
+              <SidebarLink href="/dashboard/assignrole" icon={<MdAssignmentInd />} label="Assign Role" />
+              <SidebarLink href="/dashboard/permissions" icon={<MdPrivacyTip />} label="Manage Permissions" />
             </CanComponent>
 
             <CanComponent I="manage" a="Vendor">
-              {/* <Link href="/dashboard/addvendor" className="flex items-center gap-3 text-2xs">
-                <FaUserGroup />
-                Add Vendors
-              </Link> */}
-              <Link href="/dashboard/managevendor" className="flex items-center gap-3 text-2xs">
-                <FaUserGroup />
-                Manage Vendors
-              </Link>
-              <Link href="/dashboard/categories" className="flex items-center gap-3 text-2xs">
-                <TbCategoryPlus />
-                Categories
-              </Link>
+              <SidebarLink href="/dashboard/managevendor" icon={<FaUserGroup />} label="Manage Vendors" />
+              <SidebarLink href="/dashboard/categories" icon={<TbCategoryPlus />} label="Categories" />
             </CanComponent>
+
             <CanComponent I="manage" a="User">
-              <Link href="/dashboard/managevendor" className="flex items-center gap-3 text-2xs">
-                <FaUserGroup />
-                See Users
-              </Link>
+              <SidebarLink href="/dashboard/managevendor" icon={<FaUserGroup />} label="See Users" />
             </CanComponent>
+
             <CanComponent I="create" a="Products">
-
-              <Link href="/dashboard/insert" className="flex items-center gap-3 text-2xs">
-                <FaUserGroup />
-                Insert Product
-              </Link>
-              <Link href="/dashboard/products" className="flex items-center gap-3 text-2xs">
-                <FaRegEdit />
-                Update Product
-              </Link>
-              <Link href="/dashboard/orders" className="flex items-center gap-3 text-2xs">
-                <AiFillProduct />
-                Orders
-              </Link>
+              <SidebarLink href="/dashboard/insert" icon={<FaUserGroup />} label="Insert Product" />
+              <SidebarLink href="/dashboard/products" icon={<FaRegEdit />} label="Update Product" />
+              <SidebarLink href="/dashboard/orders" icon={<AiFillProduct />} label="Orders" />
             </CanComponent>
+
             <CanComponent I="read" a="Products">
-
-              <Link href="/dashboard/customers" className="flex items-center gap-3 text-2xs">
-                <AiFillProduct />
-                See Products
-              </Link>
+              <SidebarLink href="/dashboard/customers" icon={<AiFillProduct />} label="See Products" />
             </CanComponent>
-          </div>
-          <div className="flex-1 overflow-y-scroll " style={{height:'88vh'}}>{children}</div>
+          </aside>
+
+          {/* Content */}
+          <section className="flex-1 overflow-y-auto p-6" style={{ height: '88vh' }}>
+            {children}
+          </section>
         </div>
       </AbilityContext.Provider>
+
       <DashbaordFooter />
     </main>
+
   );
 }

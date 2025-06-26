@@ -10,7 +10,6 @@ export default async function assignRole(id,role){
         roleId:role
        }
      })
-    console.log(data);
      return{success:true,message:"Role Assigned Successfull!!"}
  
    } catch (error) {

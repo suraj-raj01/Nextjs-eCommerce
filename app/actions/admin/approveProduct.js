@@ -16,7 +16,6 @@ export default async function approveProduct(id) {
       },
     });
 
-    console.log("Product data updated", data);
     return { success: true, data: data };
 
   } catch (error) {

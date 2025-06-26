@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 
 export default async function createRole(prevState,formData){
     const userrole = formData.get("role");
-    console.log(userrole);
    try {
      await prisma.role.create({
         data: {

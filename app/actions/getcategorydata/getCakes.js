@@ -12,7 +12,6 @@ export default async function getCakes() {
         }
       }
     });
-    console.log(users);
     return users;
   } catch (error) {
     console.error('Error fetching users:', error);

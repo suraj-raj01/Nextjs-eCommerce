@@ -27,8 +27,8 @@ export default function Page() {
 
   return (
     <div>
-      <h4 className="text-center">Manage Permissions</h4>
-      <div className="flex flex-wrap md:flex-row gap-6 w-full p-4">
+      <h4 className="text-start p-2">Manage Permissions</h4>
+      <div className="flex flex-wrap md:flex-row gap-6 w-full p-2">
         {role.map((item) => (
           <div key={item.id} className="flex flex-col w-130 bg-white shadow rounded-lg pt-2 pb-2 pl-4 pr-4">
             <p className="text-lg font-bold text-gray-800 mb-2">

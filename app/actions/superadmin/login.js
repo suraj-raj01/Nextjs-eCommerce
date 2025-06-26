@@ -7,8 +7,6 @@ export default async function AddUserAction(prevState, formData) {
     const email = formData.get('useremail');
     const password = formData.get('password');
 
-    console.log(formData);
-
     if (!name || !email || !password) {
         return {
             success: false,

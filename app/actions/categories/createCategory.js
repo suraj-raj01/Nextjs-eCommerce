@@ -28,7 +28,6 @@ export async function createCategory(prevState, formData) {
       console.log(error);
   }
   }
-  console.log(formData,imgurl);
 
   try {
     const data = await prisma.addCategory.create({ 
@@ -37,7 +36,6 @@ export async function createCategory(prevState, formData) {
           cateurl:imgurl
         }
     })
-    console.log(data);
     return { success: true };
   } catch (error) {
     console.error('Error registering user:', error);

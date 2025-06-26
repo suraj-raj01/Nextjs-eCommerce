@@ -9,7 +9,6 @@ export default async function samedayDelivery() {
         samedaydelivery:"yes"
       },
     });
-    console.log(products);
     return products;
   } catch (error) {
     console.error('Error fetching products:', error);

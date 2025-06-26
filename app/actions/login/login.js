@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 export default async function loginUser(prevState, formData) {
   const email = formData.get("email");
   const password = formData.get("password");
-  console.log(email, password);
 
   try {
     const user = await prisma.user.findFirst({

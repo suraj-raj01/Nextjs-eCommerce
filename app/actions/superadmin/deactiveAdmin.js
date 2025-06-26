@@ -12,7 +12,6 @@ export default async function deActivateAdmin(id) {
                 status: "pending"
             },
         });
-        console.log('Vendor updated:', updatedVendor);
         return {success:true,updatedVendor}
     } catch (error) {
         console.error('Error updating vendor:', error);

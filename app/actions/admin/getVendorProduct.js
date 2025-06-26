@@ -4,7 +4,6 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export default async function getVendorsProduct(id) {
-  console.log("Fetching products for userId:", id);
 
   try {
     const data = await prisma.product.findMany({

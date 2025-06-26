@@ -74,7 +74,10 @@ const CheckOut = () => {
             name: productname || null,
             order_id: order.id,
             handler: function (response) {
-                alert(`Payment successful! Payment ID: ${response.razorpay_payment_id}`);
+                Swal.fire({
+                    title: `Payment successful! Payment ID: ${response.razorpay_payment_id}` || "Payment successfully completed!",
+                    icon: "success"
+                });
                 formData.append("razorpayPaymentId", response.razorpay_payment_id);
                 formData.append("razorpayOrderId", response.razorpay_order_id);
                 formData.append("razorpaySignature", response.razorpay_signature);
@@ -167,7 +170,7 @@ const CheckOut = () => {
                                 type="number"
                                 name="contact"
                                 placeholder="Contact Number"
-                                className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-400"
+                                className="w-full border mb-1 border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-400"
                             />
                             <textarea
                                 rows={4}

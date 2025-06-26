@@ -16,7 +16,7 @@ export default async function cancelApproveProduct(id) {
       },
     });
 
-    console.log("Product data updated", data);
+  
     return { success: true, data: data };
 
   } catch (error) {

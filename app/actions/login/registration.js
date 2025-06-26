@@ -6,8 +6,6 @@ export default async function Registration(prevState, formData) {
     const email = formData.get('useremail');
     const password = formData.get('password');
 
-    console.log(formData);
-
     if (!name || !email || !password) {
         return {
             success: false,
@@ -23,8 +21,6 @@ export default async function Registration(prevState, formData) {
                 role:"User"
             }
         })
-
-        console.log(data);
 
         await prisma.user.create({ 
             data:{

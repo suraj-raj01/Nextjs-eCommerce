@@ -10,7 +10,6 @@ export default async function getAdmin() {
     const users = await prisma.admin.findMany({
       where :{status:"active"}
     });
-    console.log(users)
     return users;
   } catch (error) {
     console.error('Error fetching users:', error);

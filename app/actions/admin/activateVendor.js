@@ -14,7 +14,6 @@ export default async function activateVendor(id) {
       },
     });
 
-    console.log("Vendor updated:", updatedVendor);
     return { success: true, data: updatedVendor };
 
   } catch (error) {

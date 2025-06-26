@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export default async function searchVendor(searchData) {
-  console.log("Search Query:", searchData);
+
 
   if (!searchData.trim()) {
     return { success: false, message: "Search query cannot be empty.", data: [] };

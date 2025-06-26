@@ -17,19 +17,6 @@ export default async function editProduct(formData) {
     const samedaydelivery = formData.get("sameday");
     const type = formData.get("type");
 
-    console.log("Editing product ID:", id);
-    console.log("Received form data fields:", {
-      id,
-      title,
-      products,
-      price,
-      details,
-      category,
-      proinfo,
-      samedaydelivery,
-      type,
-      hasNewImage: !!myimg
-    });
 
     // Validate product ID
     if (!id) {
@@ -126,7 +113,6 @@ export default async function editProduct(formData) {
       }
     });
 
-    console.log("Product updated successfully:", updatedProduct.id);
     return {
       success: true,
       productId: updatedProduct.id,

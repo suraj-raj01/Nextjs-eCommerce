@@ -84,20 +84,6 @@ export async function productData(formData) {
     const id = formData.get('id');
     const vendorId = id;
 
-    console.log("vendorid", vendorId);
-    console.log("Received form data fields:", {
-      title,
-      products,
-      price,
-      details,
-      category,
-      proinfo,
-      samedaydelivery,
-      type,
-      vendorId,
-      hasImage: !!myimg
-    });
-
     // Validate required fields
     if (!title || !products || !price || !details || !category || !proinfo || !myimg || !vendorId || !type || !samedaydelivery) {
       const missingFields = [];
@@ -179,7 +165,6 @@ export async function productData(formData) {
       }
     });
 
-    console.log("Product created successfully:", data.id);
     return {
       success: true,
       productId: data.id,

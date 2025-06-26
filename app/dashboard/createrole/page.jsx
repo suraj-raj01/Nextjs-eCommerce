@@ -5,6 +5,7 @@ import getRole from "../../actions/superadmin/getRole";
 import deleteRole from "../../actions/superadmin/deleteRole";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import Swal from 'sweetalert2';
 
 const initialState = {
   success: undefined,
@@ -23,14 +24,33 @@ const CreateRole = () => {
     setLoading(false);
   };
 
-  const delRole = async (id) => {
-    const confirmed = window.confirm("Do you want to delete this role?");
-    if (!confirmed) return;
 
-    setLoading(true);
-    await deleteRole(id);
-    await fetchRoles();
-  };
+
+const delRole = async (id) => {
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "This role will be permanently deleted!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete it!",
+  });
+
+  if (result.isConfirmed) {
+    try {
+      setLoading(true);
+      await deleteRole(id);
+      await fetchRoles();
+      Swal.fire("Deleted!", "The role has been deleted.", "success");
+    } catch (error) {
+      Swal.fire("Error!", "Something went wrong while deleting.", "error");
+    } finally {
+      setLoading(false);
+    }
+  }
+};
+
 
   useEffect(() => {
     fetchRoles();
@@ -60,7 +80,7 @@ const CreateRole = () => {
         {state?.success && <p className="text-green-500">Role created successfully!</p>}
       </form>
 
-      <div className="flex flex-col gap-4 w-fit max-w-md p-4">
+      <div className="flex flex-col gap-4 w-fit max-w-full p-4">
         <h4 className="text-lg font-bold">Existing Roles</h4>
         {loading ? (
           <p className="text-gray-500">Loading...</p>

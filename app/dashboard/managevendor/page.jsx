@@ -83,7 +83,7 @@ export default function VendorsPage() {
   };
 
   const seeProduct = (id) => {
-    router.push(`/dashboard/products/${id}`);
+    router.push(`/dashboard/managevendor/${id}`);
   };
 
   let sno = 0;

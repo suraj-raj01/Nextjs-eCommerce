@@ -9,7 +9,7 @@ export default async function vendorRequest() {
     const users = await prisma.vendor.findMany({
         where: { status:"pending" },
     });
-    console.log(users)
+
     return users;
   } catch (error) {
     console.error('Error fetching users:', error);

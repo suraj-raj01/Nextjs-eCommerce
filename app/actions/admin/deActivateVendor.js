@@ -14,7 +14,7 @@ export default async function deActivateVendor(id) {
                 status: "pending"
             },
         });
-        console.log('Vendor updated:', updatedVendor);
+
     } catch (error) {
         console.error('Error updating vendor:', error);
     } finally {
